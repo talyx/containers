@@ -1,4 +1,13 @@
 .idea
 /cmake-build-debug/
 *.o
-vector
+.ccls
+ft_vector
+std_vector
+ft_stack
+std_stack
+ft_map
+std_map
+v_1
+v_2
+
