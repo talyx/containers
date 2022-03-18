@@ -183,3 +183,15 @@ namespace ft {
 	const_reference back() const { return (*(arr + _size - 1)); }
 
 
+//========================================================================================================
+// Iterators
+//========================================================================================================
+
+	iterator begin() { iterator b(arr); return (b); }
+
+	const_iterator begin() const { iterator b(arr); return (b); }
+
+	iterator end() { iterator b(arr + _size); return (b); }
+
+	const_iterator end() const { iterator e(arr + _size); return (e); }
+
