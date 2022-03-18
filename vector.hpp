@@ -195,3 +195,61 @@ namespace ft {
 
 	const_iterator end() const { iterator e(arr + _size); return (e); }
 
+//========================================================================================================
+// Capacity
+//========================================================================================================
+
+	size_t size() const {
+		return (this->_size);
+	}
+
+	size_type max_size() const {
+		return (_alloc.max_size());
+	}
+
+	void resize(size_type n, value_type val = value_type()) {
+		if (n < _size) {
+			for (; _size != n; _size--)
+				_alloc.destroy(&arr[_size]);
+		} else if (n > _size) {
+			if (n > _cap)
+				reserve(n);
+			size_type i = _size;
+			try {
+				for (; i < n; i++)
+					_alloc.construct(&arr[i], val);
+				_size = i;
+			} catch (...) {
+				for (size_type j = _size; j < i; ++j)
+					_alloc.destroy(&arr[j]);
+				throw;
+			}
+		}
+	}
+
+	size_type capacity() const { return _cap; }
+
+	bool empty() const { return (_size == 0); }
+
+	void reserve(size_type n) {
+		if (n <= _cap) return;
+
+		pointer new_arr = _alloc.allocate(n);
+		size_type i = 0;
+
+		try {
+			for (; i < _size; i++)
+				_alloc.construct(&new_arr[i], arr[i]);
+			for (size_type j = 0; j < _size; j++)
+				_alloc.destroy(&arr[j]);
+			_alloc.deallocate(arr, _cap);
+			_cap = n;
+			arr = new_arr;
+		} catch (...) {
+			for (size_type j = 0; j < i; j++)
+				_alloc.destroy(&new_arr[j]);
+			_alloc.deallocate(new_arr, n);
+			throw;
+		}
+	}
+
