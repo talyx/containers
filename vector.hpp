@@ -152,3 +152,34 @@ namespace ft {
 		}
 	}
 
+//========================================================================================================
+// Element access
+//========================================================================================================
+
+	reference operator[] (size_type n) { return (*(arr + n)); }
+
+	const_reference operator[](size_type n) const { return (*(arr + n)); }
+
+	reference at(size_type n) {
+		if (n >= _size)
+			throw std::out_of_range("out_of_range error: item number (" + to_str(n)
+				+ ") is greater than available items (" + to_str(_size - 1) + ")");
+		return (*(arr + n));
+	}
+
+	const_reference at(size_type n) const {
+		if (n >= _size)
+			throw std::out_of_range("out_of_range error: item number (" + to_str(n)
+				+ ") is greater than available items (" + to_str(_size - 1) + ")");
+		return (*(arr + n));
+	}
+
+	reference front() { return (*arr); }
+
+	const_reference front () const { return (*arr); }
+
+	reference back() { return  (*(arr + _size - 1)); }
+
+	const_reference back() const { return (*(arr + _size - 1)); }
+
+
