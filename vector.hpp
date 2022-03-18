@@ -45,3 +45,110 @@ namespace ft {
 }
 
 #endif //CONTAINERS_VECTOR_HPP
+//========================================================================================================
+// constructor/destructor
+//========================================================================================================
+
+	explicit vector(const allocator_type& alloc = allocator_type()): arr(0), _size(0), _cap(0), _alloc(alloc) {}
+
+	explicit vector(size_type n, const value_type& val = value_type(), const allocator_type& alloc = allocator_type()): _size(n), _cap(n), _alloc(alloc) {
+
+		if (n == 0) { arr = 0; return;}
+
+		this->arr = _alloc.allocate(n);
+		size_type i = 0;
+		try {
+			for(; i < n; ++i) {
+				_alloc.construct(&this->arr[i], val);
+			}
+		} catch(...) {
+			for (size_t j = 0; j < i; ++j) {
+				_alloc.destroy(&arr[j]);
+			}
+			_alloc.deallocate(arr, _cap);
+			this->_size = 0;
+			this->_cap = 0;
+			throw;
+		}
+	}
+
+	template<class InputIterator>
+			vector(InputIterator first, InputIterator last,  const allocator_type& alloc = allocator_type()): _alloc(alloc) {
+		// check iterator valid!!!
+		_size = iterator_dist(first, last);
+		_cap = _size;
+		this->arr = _alloc.allocate(_size);
+		size_type i = 0;
+		try {
+			for (; i < _size; ++i) {
+				_alloc.construct(&arr[i], *first);
+				first++;
+			}
+		} catch(...) {
+			for (size_type j = 0; j < i; ++j) {
+				_alloc.destroy(&arr[j]);
+			}
+			_alloc.deallocate(arr, _cap);
+			this->_size = 0;
+			this->_cap = 0;
+			throw;
+		}
+	}
+
+	vector(const vector &other): _size(other._size), _cap(other._cap), _alloc(other._alloc) {
+		this->arr = _alloc.allocate(_cap);
+		size_type i = 0;
+		try {
+			for (; i < _size; ++i) {
+				_alloc.construct(&arr[i], other.arr[i]);
+			}
+		} catch (...) {
+			for (size_type j = 0; j < i; ++j) {
+				_alloc.destroy(&arr[j]);
+			}
+			_alloc.deallocate(arr, _cap);
+			_size = 0;
+			_cap = 0;
+			throw;
+		}
+	}
+
+
+	~vector() {
+		for (size_type j = 0; j < _size; ++j) {
+			_alloc.destroy(&arr[j]);
+		}
+		_alloc.deallocate(arr, _cap);
+	}
+
+	vector &operator=(const vector &other) {
+
+		if (this == &other) { return *this; }
+
+		for (size_type j = 0; j < _size; j++) {
+			_alloc.destroy(&arr[j]);
+		}
+		_alloc.deallocate(arr, _cap);
+		_size = 0;
+		_cap = 0;
+		if (other._size == 0)
+			return *this;
+		_size = other._size;
+		_alloc = other._alloc;
+		_cap = other._cap;
+		arr = _alloc.allocate(_cap);
+		size_type i = 0;
+		try {
+			for (; i < _size; i++) {
+				_alloc.construct(&arr[i], other[i]);
+			}
+		} catch (...) {
+			for (size_type j = 0; j < i; j++)
+				_alloc.destroy(&arr[j]);
+			_alloc.deallocate(arr, _cap);
+			_size = 0;
+			_cap = 0;
+			throw;
+		}
+	}
+
