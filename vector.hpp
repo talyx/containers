@@ -243,6 +243,35 @@ class vector {
 // Modifers
 //========================================================================================================
 
+	// iterator insert(iterator position, const value_type& val) {
+	// 	_alloc.destroy(&(*position));
+	// 	_alloc.construct(&(*position), val);
+
+
+	iterator erase(iterator position) {
+		pointer p = &(*position);
+		difference_type index_it = _size - (&arr[_size - 1] - &(*position));
+		_alloc.destroy(&arr[index_it]);
+		_size--;
+		for (size_type i = index_it; i < _size; i++) {
+			_alloc.construct(&arr[i], arr[i + 1]);
+			_alloc.destroy(&arr[i +1]);
+		}
+		return  (iterator(&arr[index_it]));
+	}
+
+	iterator erase(iterator first, iterator last) {
+		pointer p = &(*last);
+		difference_type index_first = _size - ((&arr[_size - 1]) - &(*first));
+		difference_type index_last = _size - ((&arr[_size - 1]) - &(*last));
+		for (size_type i = index_first; i < index_last;i++)
+			_alloc.destroy(&arr[i]);
+		for (size_type i = 0, j = index_last; j < _size; j++, i++)
+			_alloc.construct(&arr[index_first + i], arr[j]);
+		_size -= index_last - index_first;
+		return (iterator(p));
+	}
+
 	void swap(vector& x) {
 		if (this == &x) { return; }
 
@@ -262,7 +291,28 @@ class vector {
 		x.arr = tmp_arr;
 	}
 
+	void clear() {
+		for (size_type i = 0; i < _size; i++)
+			_alloc.destroy(&arr[i]);
+		_size = 0;
+	}
 
+	void push_back (const value_type &val) {
+		if (_size + 1 > _cap)
+			(_cap > 0) ? reserve(_cap * 2) : reserve(1);
+		try {
+			_alloc.construct(&arr[_size], val);
+			_size++;
+		} catch (...) {
+			throw;
+		}
+	}
+
+	void pop_back() {
+		if (_size == 0) return;
+		_alloc.destroy(&arr[_size - 1]);
+		_size--;
+	}
 
 //========================================================================================================
 // Non-member funcition (friend)
