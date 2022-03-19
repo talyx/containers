@@ -93,20 +93,28 @@ class random_access_iterator : public iterator<random_access_iterator_tag, T, Di
 
 	template <typename t, typename distance, typename pointer, typename reference, bool _Const>
 		friend bool operator==(const random_access_iterator<t, distance, pointer, reference, _Const> &lft, \
-				const random_access_iterator<t, distance, pointer, reference, _Const> &rht) {
-			return (lft.ptr == rht.ptr);
-		}
+				const random_access_iterator<t, distance, pointer, reference, _Const> &rht);
 
 	template <typename t, typename distance, typename pointer, typename reference, bool _Const>
 		friend bool operator<(const random_access_iterator<t, distance, pointer, reference, _Const> &lft, \
-				const random_access_iterator<t, distance, pointer, reference, _Const> &rht) {
-			return (lft.ptr < rht.ptr);
-		}
+				const random_access_iterator<t, distance, pointer, reference, _Const> &rht);
 }; // class random_access_iterator
 
 //========================================================================================================
 // opertor overloading ( not class members  )
 //========================================================================================================
+
+template <typename t, typename distance, typename pointer, typename reference, bool _Const>
+		bool operator==(const random_access_iterator<t, distance, pointer, reference, _Const> &lft, \
+				const random_access_iterator<t, distance, pointer, reference, _Const> &rht) {
+			return (lft.ptr == rht.ptr);
+		}
+
+	template <typename t, typename distance, typename pointer, typename reference, bool _Const>
+		bool operator<(const random_access_iterator<t, distance, pointer, reference, _Const> &lft, \
+				const random_access_iterator<t, distance, pointer, reference, _Const> &rht) {
+			return (lft.ptr < rht.ptr);
+		}
 
 	template <typename t, typename distance, typename pointer, typename reference, bool _const>
 			bool operator!=(const random_access_iterator<t, distance, pointer, reference, _const> &lft, \
