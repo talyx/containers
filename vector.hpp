@@ -243,10 +243,85 @@ class vector {
 // Modifers
 //========================================================================================================
 
-	// iterator insert(iterator position, const value_type& val) {
-	// 	_alloc.destroy(&(*position));
-	// 	_alloc.construct(&(*position), val);
+	void assign(size_type n, const value_type& val) {
+		ft::vector<T> v(n, val);
+		swap(v);
+	}
 
+	template <typename InputIterator>
+	void assign(InputIterator first, InputIterator last) {
+		ft::vector<T> v(first, last);
+		swap(v);
+	}
+
+	void push_back(const value_type &val) {
+		if (_size + 1 > _cap)
+			(_cap > 0) ? reserve(_cap * 2) : reserve(1);
+		try {
+			_alloc.construct(&arr[_size], val);
+			_size++;
+		} catch (...) {
+			throw;
+		}
+	}
+
+	void pop_back() {
+		if (_size == 0) return;
+		_alloc.destroy(&arr[_size - 1]);
+		_size--;
+	}
+
+	iterator insert(iterator position, const value_type& val) {
+		if (position == end()) {
+			push_back(val);
+			return (end() - 1);
+		}
+		ft::vector<T, Alloc> tmp(begin(), position);
+		size_type it_index = position - begin();
+		tmp.push_back(val);
+		for (size_type i = it_index; i < _size; i++)
+			tmp.push_back(arr[i]);
+		swap(tmp);
+		return (iterator(&(arr[it_index])));
+	}
+
+	void insert(iterator position, size_type n, const value_type& val) {
+		if (position == end()) {
+			for (size_type i = 0; i < n; i++)
+				push_back(val);
+			return;
+		}
+		ft::vector<T, Alloc> tmp(begin(), position);
+		size_type it_index = position - begin();
+		for (size_type i = 0; i < n; i++)
+			tmp.push_back(val);
+		for (size_type i = it_index; i < _size; i++)
+			tmp.push_back(arr[i]);
+		swap(tmp);
+		return;
+	}
+
+	template <class InputIterator>
+	void insert(iterator position, InputIterator first, InputIterator last) {
+		if (position == end()) {
+			while(first != last) {
+				push_back(*first);
+				first++;
+			}
+
+			return;
+		}
+		ft::vector<T, Alloc> tmp(begin(), position);
+		size_type it_index = position - begin();
+		while (first != last) {
+			tmp.push_back(*first);
+			first++;
+		}
+		for (size_type i = it_index; i < _size; i++)
+			tmp.push_back(arr[i]);
+		swap(tmp);
+		return;
+	}
 
 	iterator erase(iterator position) {
 		pointer p = &(*position);
@@ -264,7 +339,7 @@ class vector {
 		pointer p = &(*last);
 		difference_type index_first = _size - ((&arr[_size - 1]) - &(*first));
 		difference_type index_last = _size - ((&arr[_size - 1]) - &(*last));
-		for (size_type i = index_first; i < index_last;i++)
+		for (size_type i = index_first; i < index_last; i++)
 			_alloc.destroy(&arr[i]);
 		for (size_type i = 0, j = index_last; j < _size; j++, i++)
 			_alloc.construct(&arr[index_first + i], arr[j]);
@@ -295,23 +370,6 @@ class vector {
 		for (size_type i = 0; i < _size; i++)
 			_alloc.destroy(&arr[i]);
 		_size = 0;
-	}
-
-	void push_back (const value_type &val) {
-		if (_size + 1 > _cap)
-			(_cap > 0) ? reserve(_cap * 2) : reserve(1);
-		try {
-			_alloc.construct(&arr[_size], val);
-			_size++;
-		} catch (...) {
-			throw;
-		}
-	}
-
-	void pop_back() {
-		if (_size == 0) return;
-		_alloc.destroy(&arr[_size - 1]);
-		_size--;
 	}
 
 //========================================================================================================
