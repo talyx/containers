@@ -98,6 +98,13 @@ class random_access_iterator : public iterator<random_access_iterator_tag, T, Di
 	template <typename t, typename distance, typename pointer, typename reference, bool _Const>
 		friend bool operator<(const random_access_iterator<t, distance, pointer, reference, _Const> &lft, \
 				const random_access_iterator<t, distance, pointer, reference, _Const> &rht);
+
+	template <typename t, typename distance, typename pointer, typename reference, bool _Const>
+		friend typename random_access_iterator<t, distance, pointer, reference, _Const>::difference_type
+		operator-(const random_access_iterator<t, distance, pointer, reference, _Const> &lft, \
+				const random_access_iterator<t, distance, pointer, reference, _Const> &rht);
+
+
 }; // class random_access_iterator
 
 //========================================================================================================
@@ -137,6 +144,13 @@ template <typename t, typename distance, typename pointer, typename reference, b
 							const random_access_iterator<t, distance, pointer, reference, _const> &rht) {
 				return (!(lft < rht));
 			}
+	template <typename t, typename distance, typename pointer, typename reference, bool _Const>
+		typename  random_access_iterator<t, distance, pointer, reference, _Const>::difference_type
+		operator-(const random_access_iterator<t, distance, pointer, reference, _Const> &lft, \
+				const random_access_iterator<t, distance, pointer, reference, _Const> &rht) {
+			return (lft.ptr - rht.ptr);
+		}
+
 } // namespace ft
 
 #endif // ITERATORS_RANDOM_ACCESS_ITERATOR_HPP_
