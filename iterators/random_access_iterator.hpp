@@ -23,11 +23,15 @@ class random_access_iterator : public iterator<random_access_iterator_tag, T, Di
 
 	random_access_iterator(): ptr(0) {}
 
-	random_access_iterator(T *p): ptr(p) {}
+	explicit random_access_iterator(T *p): ptr(p) {}
 
 	random_access_iterator(const random_access_iterator & other): ptr(other.ptr) {}
 
-// copy-assignable?
+	random_access_iterator &operator=(const random_access_iterator& other) {
+		if (this == &other) return (*this);
+		ptr = other.ptr;
+		return (*this);
+	}
 
 	~random_access_iterator() {}
 
@@ -103,8 +107,6 @@ class random_access_iterator : public iterator<random_access_iterator_tag, T, Di
 		friend typename random_access_iterator<t, distance, pointer, reference, _Const>::difference_type
 		operator-(const random_access_iterator<t, distance, pointer, reference, _Const> &lft, \
 				const random_access_iterator<t, distance, pointer, reference, _Const> &rht);
-
-
 }; // class random_access_iterator
 
 //========================================================================================================
