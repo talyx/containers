@@ -7,7 +7,7 @@
 //========================================================
 // main struct
 //========================================================
-
+namespace ft {
 template <typename Category, typename T, typename Distance = ptrdiff_t, typename Pointer = T*, typename Reference = T&>
 struct iterator {
 	public:
@@ -75,6 +75,7 @@ struct conditional<true, A, B> {
 	typedef A type;
 };
 
+} // namespace ft
 
 #endif // ITERATORS_ITERATOR_HPP_
 
