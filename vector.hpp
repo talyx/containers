@@ -35,9 +35,12 @@ class vector {
 // constructor/destructor
 //========================================================================================================
 
-	explicit vector(const allocator_type& alloc = allocator_type()): arr(0), _size(0), _cap(0), _alloc(alloc) {}
+	explicit vector(const allocator_type& alloc = allocator_type()):
+		arr(0), _size(0), _cap(0), _alloc(alloc) {}
 
-	explicit vector(size_type n, const value_type& val = value_type(), const allocator_type& alloc = allocator_type()): _size(n), _cap(n), _alloc(alloc) {
+	explicit vector(size_type n, const value_type& val = value_type(),
+			const allocator_type& alloc = allocator_type()):
+		_size(n), _cap(n), _alloc(alloc) {
 
 		if (n == 0) { arr = 0; return;}
 
@@ -59,7 +62,10 @@ class vector {
 	}
 
 	template<class InputIterator>
-			vector(InputIterator first, InputIterator last,  const allocator_type& alloc = allocator_type()): _alloc(alloc) {
+	vector(InputIterator first, InputIterator last,
+		const allocator_type& alloc = allocator_type(),
+		typename enable_if<!is_integral<InputIterator>::value, void**>::type = NULL):
+		_alloc(alloc) {
 		// check iterator valid!!!
 		_size = iterator_dist(first, last);
 		_cap = _size;
@@ -249,7 +255,8 @@ class vector {
 	}
 
 	template <typename InputIterator>
-	void assign(InputIterator first, InputIterator last) {
+	void assign(InputIterator first, InputIterator last,
+		typename ft::enable_if<!is_integral<InputIterator>::value, void**>::type = NULL) {
 		ft::vector<T> v(first, last);
 		swap(v);
 	}
@@ -302,7 +309,8 @@ class vector {
 	}
 
 	template <class InputIterator>
-	void insert(iterator position, InputIterator first, InputIterator last) {
+	void insert(iterator position, InputIterator first, InputIterator last,
+		typename ft::enable_if<!is_integral<InputIterator>::value, void**>::type = NULL) {
 		if (position == end()) {
 			while(first != last) {
 				push_back(*first);
