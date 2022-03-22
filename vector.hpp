@@ -7,6 +7,7 @@
 #include <stdexcept>
 #include "./iterators/random_access_iterator.hpp"
 #include "./utils/utils.hpp"
+#include "./iterators/reverse_iterator.hpp"
 
 namespace ft {
 template < class T, class Alloc = std::allocator<T> >
@@ -21,15 +22,16 @@ class vector {
 	typedef T										value_type;
 	typedef Alloc										allocator_type;
 	typedef size_t										size_type;
-	typedef ptrdiff_t									difference_type;
+	typedef typename ft::iterator_traits<ft::iterator< ft::random_access_iterator_tag, T> >::difference_type
+												difference_type;
 	typedef value_type&									reference;
 	typedef const value_type&								const_reference;
 	typedef typename allocator_type::pointer						pointer;
 	typedef typename allocator_type::const_pointer						const_pointer;
 	typedef random_access_iterator< value_type, difference_type, pointer, reference>	iterator;
 	typedef random_access_iterator< value_type, difference_type, pointer, reference, true>	const_iterator;
-	// typedef reverse_iterator<iterator>									reverse_iterator;
-	// typedef reverse_iterator<const_iterator>							const_reverse_iterator;
+	typedef ft::reverse_iterator<iterator>							reverse_iterator;
+	typedef ft::reverse_iterator<const_iterator>						const_reverse_iterator;
 
 //========================================================================================================
 // constructor/destructor
@@ -186,6 +188,14 @@ class vector {
 	iterator end() { iterator b(arr + _size); return (b); }
 
 	const_iterator end() const { iterator e(arr + _size); return (e); }
+
+	reverse_iterator rbegin() { reverse_iterator rev_it(this->end()); return (rev_it); }
+
+	const_reverse_iterator rbegin() const { reverse_iterator rev_it(this->end()); return (rev_it);}
+
+	reverse_iterator rend() { reverse_iterator rev_it (this->begin()); return (rev_it); }
+
+	const_reverse_iterator rend() const { reverse_iterator rev_it (this->begin()); return (rev_it); }
 
 //========================================================================================================
 // Capacity
