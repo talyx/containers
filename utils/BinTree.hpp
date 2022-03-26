@@ -36,9 +36,9 @@ struct BinTree {
 	~BinTree() {rec_delete(*_head); }
 
 //========================================================
-// funcition
+// insert/remove
 //========================================================
-	void	insert(const value_type &val) {
+	ft::pair<node_pointer, bool> insert(const value_type &val) {
 		node_pointer y = NULL;
 		node_pointer x = *_head;
 
@@ -51,7 +51,7 @@ struct BinTree {
 		}
 		if (y != NULL && y->data.first == val.first) {
 			std::cout << "Value with this key(" << val.first << ") already exists\n";
-			return;
+			return ft::make_pair(y, false);
 		}
 
 		node_pointer new_node = _n_allocator.allocate(1);
@@ -65,21 +65,10 @@ struct BinTree {
 			else
 				y->right = new_node;
 		}
+		return (ft::make_pair(new_node, true));
 	}
 
-	void	transplant(node_pointer a, node_pointer b) {
-		if (a->parent == NULL)
-			*_head = b;
-		else if (a == a->parent->left)
-			a->parent->left = b;
-		else
-			a->parent->right = b;
-
-		if (b != NULL)
-			b->parent = a->parent;
-	}
-
-	void	delete_elem(const value_type &val) {
+	void	remove(const value_type &val) {
 		node_pointer tmp = search_by_key(val);
 
 		if (tmp->left == NULL) {
@@ -96,14 +85,7 @@ struct BinTree {
 			transplant(tmp, y);
 			y->left = tmp->left;
 			y->left->parent = y;
-
 		}
-	}
-
-	void	print() {
-		node_pointer x = *_head;
-
-		rec_print(x);
 	}
 
 	node_pointer search_by_key(const value_type &val) {
@@ -117,6 +99,58 @@ struct BinTree {
 		}
 		return (x);
 	}
+//========================================================
+// print
+//========================================================
+	void	print() {
+
+		node_pointer x = *_head;
+		rec_print(x);
+	}
+
+	void	print_inc() {
+		node_pointer x = tree_min();
+
+		while (x != NULL) {
+			std::cout << "key: " << x->data.first << " |valude: " << x->data.second << std::endl;
+			x = successor(x);
+		}
+	}
+
+	void	print_dec() {
+		node_pointer x = tree_max();
+
+		while (x != NULL) {
+			std::cout << "key: " << x->data.first << " |valude: " << x->data.second << std::endl;
+			x = predecessor(x);
+		}
+	}
+
+	node_pointer successor(node_pointer x) {
+		if (x->right != NULL)
+			return tree_min(x->right);
+		node_pointer y = x->parent;
+		while (y != NULL && x == y->right) {
+			x = y;
+			y = y->parent;
+		}
+		return y;
+	}
+
+	node_pointer predecessor(node_pointer x) {
+		if (x->left != NULL)
+			return tree_max(x->left);
+		node_pointer y = x->parent;
+		while (y != NULL && x == y->left) {
+			x = y;
+			y = y->parent;
+		}
+		return (y);
+	}
+
+//========================================================
+// min/max
+//========================================================
 
 	node_pointer tree_min() {
 		node_pointer x = *_head;
@@ -164,6 +198,19 @@ struct BinTree {
 			_n_allocator.deallocate(n, 1);
 		}
 	}
+
+void	transplant(node_pointer a, node_pointer b) {
+		if (a->parent == NULL)
+			*_head = b;
+		else if (a == a->parent->left)
+			a->parent->left = b;
+		else
+			a->parent->right = b;
+
+		if (b != NULL)
+			b->parent = a->parent;
+	}
+
 };
 
 } // namespace ft
