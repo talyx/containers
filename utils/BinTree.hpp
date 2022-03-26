@@ -29,7 +29,7 @@ struct BinTree {
 //========================================================
 // constructor/destructor
 //========================================================
-	BinTree(const node_alloc& al = node_alloc()): _n_allocator(al) {
+	explicit BinTree(const node_alloc& al = node_alloc()): _n_allocator(al) {
 		*_head = NULL;
 	}
 
@@ -67,6 +67,39 @@ struct BinTree {
 		}
 	}
 
+	void	transplant(node_pointer a, node_pointer b) {
+		if (a->parent == NULL)
+			*_head = b;
+		else if (a == a->parent->left)
+			a->parent->left = b;
+		else
+			a->parent->right = b;
+
+		if (b != NULL)
+			b->parent = a->parent;
+	}
+
+	void	delete_elem(const value_type &val) {
+		node_pointer tmp = search_by_key(val);
+
+		if (tmp->left == NULL) {
+			transplant(tmp, tmp->right);
+		} else if (tmp->right == NULL) {
+			transplant(tmp, tmp->left);
+		} else {
+			node_pointer y = tree_min(tmp->right);
+			if (y->parent != tmp) {
+				transplant(y, y->right);
+				y->right = tmp->right;
+				y->right->parent = y;
+			}
+			transplant(tmp, y);
+			y->left = tmp->left;
+			y->left->parent = y;
+
+		}
+	}
+
 	void	print() {
 		node_pointer x = *_head;
 
@@ -85,7 +118,7 @@ struct BinTree {
 		return (x);
 	}
 
-	node_pointer min() {
+	node_pointer tree_min() {
 		node_pointer x = *_head;
 
 		while (x->left != NULL)
@@ -93,8 +126,21 @@ struct BinTree {
 		return (x);
 	}
 
-	node_pointer max() {
+	node_pointer tree_min(node_pointer x) {
+		while (x->left != NULL)
+			x = x->left;
+		return (x);
+	}
+
+	node_pointer tree_max() {
 		node_pointer x = *_head;
+
+		while (x->right != NULL)
+			x = x->right;
+		return (x);
+	}
+
+	node_pointer tree_max(node_pointer x) {
 
 		while (x->right != NULL)
 			x = x->right;
