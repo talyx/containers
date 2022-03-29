@@ -8,7 +8,7 @@
 #define BLUE	"\033[34m"
 #define OKBLUE	"\033[94m"
 
-#define FAIl	"\033[91m"
+#define FAIL	"\033[91m"
 #define RED	"\033[31m"
 
 #define GREEN	"\033[32m"
