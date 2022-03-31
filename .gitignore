@@ -11,3 +11,9 @@ std_map
 v_1
 v_2
 a.out
+ft_main_map.cpp
+std_main_map.cpp
+ft_main_vector.cpp
+std_main_vector.cpp
+ft_main_stack.cpp
+std_main_stack.cpp
