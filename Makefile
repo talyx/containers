@@ -6,7 +6,7 @@ WARNING =\033[93m
 RESET =\033[0m
 
 CXX = clang++
-SANFLAGS = -fsanitize=address
+# SANFLAGS = -fsanitize=address
 DEBUGFLAGS = -g -fno-limit-debug-info
 CXXFLAGS = -Wall -Wextra -Werror -std=c++98 $(DEBUGFLAGS) $(SANFLAGS) -O3
 
@@ -54,19 +54,19 @@ $(STD_STACK) : stack.hpp test/std_main_stack.cpp Makefile
 	$(CXX) test/std_main_stack.cpp $(CXXFLAGS) -o $(STD_STACK)
 
 run_vector :
-	@echo "$(GREEN)================================VECTOR=TEST========================================$(RESET)";				\
+	@echo "$(GREEN)================================VECTOR=TEST========================================$(RESET)";	\
 	./$(FT_VECTOR) > v_1;
 	@ ./$(STD_VECTOR) > v_2;
 	@diff -u --color=auto v_1 v_2; [ $$? -eq 1 ]
 
 run_map:
-	@echo "$(WARNING)================================MAP=TEST===========================================$(RESET)";				\
+	@echo "$(WARNING)================================MAP=TEST===========================================$(RESET)";	\
 	./$(FT_MAP) > v_1;		\
 	./$(STD_MAP) > v_2;		\
 	diff -u --color=auto v_1 v_2; [ $$? -eq 1 ]
 
 run_stack:
-	@echo "$(OKCYAN)================================STACK=TEST=========================================$(RESET)";				\
+	@echo "$(OKCYAN)================================STACK=TEST=========================================$(RESET)";	\
 	./$(FT_STACK) > v_1;		\
 	./$(STD_STACK) > v_2;		\
 	diff -u --color=auto v_1 v_2; [ $$? -eq 1 ]
