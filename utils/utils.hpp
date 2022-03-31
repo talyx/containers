@@ -180,7 +180,7 @@ struct pair {
 // constructor/destructor
 //=========================================================
 
-	pair() { }
+	pair(): first(first_type()), second(second_type()) { }
 
 	pair(const T1& x, const T2& y): first(x), second(y) { }
 
