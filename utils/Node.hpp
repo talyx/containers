@@ -22,11 +22,9 @@ struct Node {
 // constructor/destructor
 //=========================================================
 
-	Node(): parent(NULL), left(NULL), right(NULL) {}
+	Node(): data(value_type()) {}
 
-	Node(const value_type &val, Node* parent = NULL, Node* left = NULL,
-		Node* right = NULL): parent(parent), left(left),
-		right(right), data(val) { }
+	Node(const value_type &val): data(val) { }
 
 	Node(const Node & o): parent(o.parent), left(o.left),
 		right(o.right), data(o.data) { }
