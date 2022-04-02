@@ -92,13 +92,13 @@ public:
 				//========================================================================================================
 					node* base() { return (_node_ptr); }
 
-					static node* tree_min(node* x) {
+					node* tree_min(node* x) {
 						while (x->left != NULL)
 							x = x->left;
 						return (x);
 					}
 
-					static node* tree_max(node* x) {
+					node* tree_max(node* x) {
 
 						while (x->right != NULL)
 							x = x->right;
@@ -106,6 +106,13 @@ public:
 					}
 
 					node* successor(node* x) {
+						if (x == NULL) {
+							x = root;
+							if (x == NULL)
+								throw std::runtime_error("An increment was made for an empty map.");
+							x = tree_min(x);
+							return (x);
+						}
 						if (x->right != NULL)
 							return tree_min(x->right);
 						node* y = x->parent;
@@ -117,6 +124,13 @@ public:
 					}
 
 					node* predecessor(node* x) {
+						if (x == NULL) {
+							x = root;
+							if (x == NULL)
+								throw std::runtime_error("An decrement was made for an empty map.");
+							x = tree_max(x);
+							return (x);
+						}
 						if (x->left != NULL)
 							return tree_max(x->left);
 						node* y = x->parent;
