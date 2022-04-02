@@ -28,17 +28,17 @@ public:
 
 				private:
 					node * _node_ptr;
+					node * root;
 
 				public:
 				//========================================================================================================
 				// constructor/destructor
 				//========================================================================================================
-					BST_iterator() { _node_ptr = NULL; }
+					BST_iterator() { _node_ptr = NULL; root = NULL; }
 
-					BST_iterator(node* const p) { _node_ptr = p; }
+					BST_iterator(node* const p, node* const root) { _node_ptr = p; this->root = root;}
 
-					BST_iterator(const BST_iterator& other): _node_ptr(other._node_ptr) {}
-
+					BST_iterator(const BST_iterator& other): _node_ptr(other._node_ptr), root(other.root) { }
 					~BST_iterator() {}
 				//========================================================================================================
 				// operator overloading
@@ -47,6 +47,8 @@ public:
 						if (this == &other) return *this;
 
 						_node_ptr = other._node_ptr;
+						root = other.root;
+						return (*this);
 					}
 
 					template<typename t, typename distance, typename pointer,
