@@ -44,12 +44,90 @@ public:
 		}
 	};
 
+private:
+	binTree tree;
+
+public:
 //========================================================================================================
 // constructor/destructor
 //========================================================================================================
+	explicit map(const key_compare& comp = key_compare(), const allocator_node alloc = allocator_node()):
+	tree(comp, alloc) {	}
 
+	template<class InputIterator>
+	map (InputIterator first, InputIterator last, const key_compare comp = key_compare(),
+		 const allocator_node alloc = allocator_node()): tree(comp, alloc) {
+		while (first != last) {
+			this->insert(*first);
+			first++;
+		}
+	}
+	map(const map& other): tree(other.getCmp(), other.getAlloc()) {	}
 
+	map &operator=(const map& other) {
+		if (this == &other) return *this;
 
+		tree = other.tree;
+	}
+
+	~map() {}
+//========================================================================================================
+// iterators
+//========================================================================================================
+	iterator begin() {
+		return (iterator(tree.tree_min(), tree.root));
+	}
+
+	const_iterator begin() const {
+		return (iterator(tree.tree_min(), tree.root));
+	}
+
+	iterator end() {
+		return (iterator(NULL, tree.root));
+	}
+
+	const_iterator end() const {
+		return (iterator(NULL, tree.root));
+	}
+
+	reverse_iterator rbegin() {
+		return (reverse_iterator(end()));
+	}
+
+	const_reverse_iterator rbegin() const {
+		return (reverse_iterator(end()));
+	}
+
+	reverse_iterator rend() {
+		return (const_reverse_iterator(begin()));
+	}
+
+	const_reverse_iterator rend() const {
+		return (const_reverse_iterator(begin()));
+	}
+
+//========================================================================================================
+// capacity
+//========================================================================================================
+//========================================================================================================
+// element access
+//========================================================================================================
+//========================================================================================================
+// modifiers
+//========================================================================================================
+	ft::pair<iterator, bool> insert(const value_type &val) {
+		return (tree.insert(val));
+	}
+
+//========================================================================================================
+// observers
+//========================================================================================================
+//========================================================================================================
+// operations
+//========================================================================================================
+	void print_tree(void) {
+		tree.print();
+	}
 }; // class map
 } // namespace ft
 
