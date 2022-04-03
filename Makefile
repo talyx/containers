@@ -6,7 +6,7 @@ WARNING =\033[93m
 RESET =\033[0m
 
 CXX = clang++
-# SANFLAGS = -fsanitize=address
+ SANFLAGS = -fsanitize=address
 DEBUGFLAGS = -g -fno-limit-debug-info
 CXXFLAGS = -Wall -Wextra -Werror -std=c++98 $(DEBUGFLAGS) $(SANFLAGS) -O3
 
@@ -21,36 +21,42 @@ OBJ = $(SRC:.cpp=.o)
 FT_VECTOR = ft_vector
 STD_VECTOR = std_vector
 VECTOR = vector
+VECTOR_INC = vector.hpp utils/utils.hpp \
+			iterators/random_access_iterator.hpp \
+			iterators/reverse_iterator.hpp \
 
 FT_MAP = ft_map
 STD_MAP = std_map
 MAP = map
+MAP_INC = map.hpp utils/utils.hpp utils/BinTree.hpp \
+			iterators/reverse_iterator.hpp \
 
 FT_STACK = ft_stack
 STD_STACK = std_stack
 STACK = stack
+STACK_INC = vector.hpp stack.hpp \
 
 # =======================================Run===================================================================
 
 all: $(FT_VECTOR) $(STD_VECTOR) $(FT_MAP) $(STD_MAP) $(FT_STACK) $(STD_STACK)
 
 # ================Compile==================
-$(FT_VECTOR) : vector.hpp test/ft_main_vector.cpp Makefile
+$(FT_VECTOR) : $(VECTOR_INC) test/ft_main_vector.cpp Makefile
 	$(CXX) test/ft_main_vector.cpp $(CXXFLAGS) -o $(FT_VECTOR)
 
-$(STD_VECTOR) : vector.hpp test/std_main_vector.cpp Makefile
+$(STD_VECTOR) : test/std_main_vector.cpp Makefile
 	$(CXX) test/std_main_vector.cpp $(CXXFLAGS) -o $(STD_VECTOR)
 
-$(FT_MAP) : map.hpp test/ft_main_map.cpp Makefile
+$(FT_MAP) : $(MAP_INC) test/ft_main_map.cpp Makefile
 	$(CXX) test/ft_main_map.cpp $(CXXFLAGS) -o $(FT_MAP)
 
-$(STD_MAP) : map.hpp test/std_main_map.cpp Makefile
+$(STD_MAP) :  test/std_main_map.cpp Makefile
 	$(CXX) test/std_main_map.cpp $(CXXFLAGS) -o $(STD_MAP)
 
-$(FT_STACK) : stack.hpp test/ft_main_stack.cpp Makefile
+$(FT_STACK) : $(STACK_INC) test/ft_main_stack.cpp Makefile
 	$(CXX) test/ft_main_stack.cpp $(CXXFLAGS) -o $(FT_STACK)
 
-$(STD_STACK) : stack.hpp test/std_main_stack.cpp Makefile
+$(STD_STACK) :  test/std_main_stack.cpp Makefile
 	$(CXX) test/std_main_stack.cpp $(CXXFLAGS) -o $(STD_STACK)
 
 run_vector :
