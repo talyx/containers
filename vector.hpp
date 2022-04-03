@@ -396,17 +396,7 @@ template <class T, class Alloc>
 
 	if (lhs.size() != rhs.size()) return false;
 
-	typename ft::vector<T, Alloc>::iterator lhs_it;
-	typename ft::vector<T, Alloc>::iterator rhs_it;
-
-	lhs_it = lhs.begin();
-	rhs_it = rhs.begin();
-	while (lhs_it != lhs.end()) {
-		if ((rhs_it == rhs.end()) || (*lhs_it != *rhs_it)) return false;
-		lhs_it++;
-		rhs_it++;
-	}
-	return true;
+	return (ft::equal(lhs.begin(), lhs.end(), rhs.begin(), rhs.end()));
 }
 
 template <class T, class Alloc>
@@ -433,6 +423,12 @@ template <class T, class Alloc>
   bool operator>=(const ft::vector<T, Alloc>& lhs, const ft::vector<T, Alloc>& rhs) {
 	return (!(lhs < rhs));
 }
+
+template< class T, class Alloc >
+	void swap( ft::vector<T,Alloc>& lhs,
+			   ft::vector<T,Alloc>& rhs ){
+		lhs.swap(rhs);
+	}
 
 } // namespace ft
 
