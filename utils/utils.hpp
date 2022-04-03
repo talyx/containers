@@ -35,6 +35,10 @@
 
 namespace ft {
 
+//========================================================
+// iterator_dist
+//========================================================
+
 template <typename InputIterator>
 ptrdiff_t	iterator_dist(InputIterator first, InputIterator second) {
 	ptrdiff_t	i;
@@ -50,6 +54,10 @@ std::string	to_str(size_t n) {
 	return (str.str());
 }
 
+//========================================================
+// lexicographical_compare
+//========================================================
+
 template <class InputIterator1, class InputIterator2>
 bool lexicographical_compare(InputIterator1 first1, InputIterator1 last1,
 				InputIterator2 first2, InputIterator2 last2) {
@@ -61,8 +69,19 @@ bool lexicographical_compare(InputIterator1 first1, InputIterator1 last1,
   return (first2 != last2);
 }
 
-// template <typename Iterator>
-// bool is_iterator( Iterator first, Iterator second) {
+//========================================================
+// equal
+//========================================================
+
+template <class  InputIterator1, class InputIterator2>
+bool equal (InputIterator1 first1, InputIterator1 last1, InputIterator2 first2, InputIterator2 last2) {
+	while (first1 != last1) {
+		if (first2 == last2 && first1 != first2)
+			return (false);
+		first1++;
+		first2++;
+	}
+}
 
 //========================================================================================================
 // is_integral
@@ -128,9 +147,9 @@ struct is_integral<unsigned long> {
 	static const bool value = true;
 };
 
-//========================================================================================================
+//========================================================
 // enable_if
-//========================================================================================================
+//========================================================
 
 template <bool, typename T = void>
 struct enable_if { };
@@ -140,9 +159,9 @@ struct enable_if<true, T> {
 	typedef T type;
 };
 
-//========================================================================================================
+//========================================================
 // binary_function
-//========================================================================================================
+//========================================================
 
 template < class Arg1, class Arg2, class Result >
 struct binary_function {
@@ -151,9 +170,9 @@ struct binary_function {
 	typedef Result	result_type;
 };
 
-//========================================================================================================
+//========================================================
 // less
-//========================================================================================================
+//========================================================
 
 template < class T >
 struct less: public ft::binary_function<T, T, bool > {
