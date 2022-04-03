@@ -16,6 +16,10 @@ namespace ft {
 		typedef typename Container::reference 		reference;
 		typedef typename Container::const_reference const_reference;
 
+//========================================================
+// constructor/destructor
+//========================================================
+
 		explicit stack(const container_type& cont = container_type()): c(cont){}
 		stack(const stack& other): c(other.c) {}
 		stack &operator=(const stack& other) {
@@ -23,6 +27,21 @@ namespace ft {
 			c = other.c;
 		}
 		~stack(){}
+//========================================================
+// element access
+//========================================================
+		value_type & top()
+		{
+			return (c.back());
+		}
+		const value_type& top() const
+		{
+			return  (c.back());
+		}
+
+//========================================================
+// capacity
+//========================================================
 
 		bool empty() const
 		{
@@ -34,14 +53,10 @@ namespace ft {
 			return (c.size());
 		}
 
-		value_type & top()
-		{
-			return (c.back());
-		}
-		const value_type& top() const
-		{
-			return  (c.back());
-		}
+//========================================================
+// modifiers
+//========================================================
+
 		void push (const value_type& val)
 		{
 			c.push_back(val);
@@ -56,6 +71,9 @@ namespace ft {
 			friend bool operator<(const stack<T1, Cont>& lhs, const stack<T1, Cont>& rhs);
 
 	};
+//========================================================
+// Non-member function
+//========================================================
 	template <typename T, typename Container>
 		bool operator==(const stack<T, Container>& lhs, const stack<T, Container>& rhs)
 	{
