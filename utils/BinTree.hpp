@@ -155,29 +155,43 @@ public:
 private:
 	comp 			cmp;
 	allocator_node	alloc;
+	size_t 			_size;
+
+public:
+	node_pointer 	root;
 //========================================================
 // constructor/destructor
 //========================================================
-public:
-	node_pointer 	root;
 
-	explicit BinTree(const comp cmp = comp(), const allocator_node & al = allocator_node ()): cmp(cmp), alloc(al) { root = NULL; }
+	explicit BinTree(const comp cmp = comp(), const allocator_node & al = allocator_node ()):
+			cmp(cmp), alloc(al), _size(0) { root = NULL; }
 
+	BinTree(const BinTree& other){
+		*this = other;
+	}
 	BinTree &operator=(const BinTree &other) {
 		if (this == &other) return *this;
 
 		rec_delete(root);
-		node_pointer tmp_head = other.get_head();
+		node_pointer tmp_head = other.root;
+		cmp = other.cmp;
+		alloc = other.alloc;
 		while (tmp_head != NULL) {
 			this->insert(tmp_head->data);
 			tmp_head = successor(tmp_head);
 		}
+		_size = other._size;
 	}
 
 	~BinTree (){ rec_delete(root); }
-
 //========================================================
-// insert/remove
+// capacity
+//========================================================
+	bool empty() const { return (root == NULL); }
+	size_t size() const { return (_size); }
+	size_t max_size() const { return (alloc.max_size()); }
+//========================================================
+// modifiers
 //========================================================
 	ft::pair<iterator, bool> insert(const value_type &val) {
 		node_pointer y = NULL;
@@ -190,7 +204,6 @@ public:
 				x = x->right;
 		}
 		if (y != NULL && y->data.first == val.first) {
-//			std::cout << "Value with this key(" << val.first << ") already exists\n";
 			return ft::make_pair(iterator (y, root), false);
 		}
 
@@ -205,65 +218,105 @@ public:
 					y->left = new_node;
 				else
 					y->right = new_node;
-		}
+			}
+			_size++;
 		} catch(...) {
 			return (ft::make_pair(iterator (new_node, root), false));
 		}
 		return (ft::make_pair(iterator(new_node, root), true));
 	}
 
-//	void	remove(const value_type &val) {
-//		node_pointer tmp = search_by_key(val);
-//
-//		if (tmp->left == NULL) {
-//			transplant(tmp, tmp->right);
-//		} else if (tmp->right == NULL) {
-//			transplant(tmp, tmp->left);
-//		} else {
-//			node_pointer y = tree_min(tmp->right);
-//			if (y->parent != tmp) {
-//				transplant(y, y->right);
-//				y->right = tmp->right;
-//				y->right->parent = y;
-//			}
-//			transplant(tmp, y);
-//			y->left = tmp->left;
-//			y->left->parent = y;
-//		}
-//	}
-//
-//	node_pointer search_by_key(const value_type &val) {
-//		node_pointer x = *_head;
-//
-//		while (x != NULL && val.first != x->data.first) {
-//			if (val < x->data)
-//				x = x->left;
-//			else
-//				x = x->right;
-//		}
-//		return (x);
-//	}
-////========================================================
-//// print
-////========================================================
-	void	print() {
+	iterator insert(iterator position, const value_type& val) {
+		(void) position;
+		ft::pair<iterator, bool> ret = insert(val);
 
-		node_pointer x = root;
-		rec_print(x);
+		return (ret.first);
 	}
-////========================================================
-//// min/max
-////========================================================
-//
+
+	template<class It>
+	void insert(It first, It last) {
+		while (first != last){
+			insert(*first);
+			first++;
+		}
+	}
+
+	node_pointer 	erase(const value_type &val) {
+		node_pointer tmp = search_by_key(val);
+		node_pointer ret = NULL;
+		if (tmp == NULL)
+			return (tmp);
+		if (tmp->left == NULL) {
+			if (tmp->right != NULL) {
+				ret = tmp->right;
+			}
+			else {
+				ret = tmp->parent;
+			}
+			transplant(tmp, tmp->right);
+		} else if (tmp->right == NULL) {
+			if (tmp->left != NULL)
+				ret = tmp->left;
+			else
+				ret = tmp->parent;
+			transplant(tmp, tmp->left);
+		} else {
+			node_pointer y = tree_min(tmp->right);
+			if (y->parent != tmp) {
+				transplant(y, y->right);
+				y->right = tmp->right;
+				y->right->parent = y;
+			}
+			ret = y;
+			transplant(tmp, y);
+			y->left = tmp->left;
+			y->left->parent = y;
+		}
+		alloc.destroy(tmp);
+		alloc.deallocate(tmp, 1);
+		_size--;
+		return (ret);
+	}
+
+	iterator erase(iterator pos) {
+		value_type tmp = *pos;
+		node_pointer n_tmp = erase(tmp);
+		return (iterator(n_tmp, root));
+	}
+
+	void 	erase(iterator first, iterator last) {
+		while (first != last) {
+			first = erase(first);
+		}
+	}
+
+	node_pointer search_by_key(const value_type &val) {
+		node_pointer x = root;
+
+		while (x != NULL && val.first != x->data.first) {
+			if (val < x->data)
+				x = x->left;
+			else
+				x = x->right;
+		}
+		return (x);
+	}
+
+//========================================================
+// operations
+//========================================================
 	node_pointer tree_min() {
 		node_pointer x = root;
-
+		if (x == NULL)
+			return (x);
 		while (x->left != NULL)
 			x = x->left;
 		return (x);
 	}
 
 	node_pointer tree_min(node_pointer x) {
+		if (x == NULL)
+			return (x);
 		while (x->left != NULL)
 			x = x->left;
 		return (x);
@@ -271,13 +324,17 @@ public:
 
 	node_pointer tree_max() {
 		node_pointer x = root;
-
+		if (x == NULL)
+			return (x);
 		while (x->right != NULL)
 			x = x->right;
 		return (x);
 	}
 
 	node_pointer tree_max(node_pointer x) {
+
+		if (x == NULL)
+			return (x);
 
 		while (x->right != NULL)
 			x = x->right;
@@ -286,6 +343,58 @@ public:
 
 	allocator_node getAlloc() { return alloc; }
 	comp getComp() { return cmp; }
+
+
+	void swap (BinTree &other) {
+
+		BinTree tmp;
+		tmp = *this;
+		*this = other;
+		other = tmp;
+	}
+
+	void clear() {
+		rec_delete(root);
+		root = NULL;
+	}
+
+	iterator lower_bound (const value_type & k) {
+		iterator begin(tree_min(), root);
+		iterator end (NULL, root);
+		while ((begin != end) && cmp(begin->first, k.first))
+			begin++;
+		return (begin);
+	}
+
+	const_iterator lower_bound (const value_type & k) const {
+		const_iterator begin(tree_min(), root);
+		const_iterator end (NULL, root);
+		while ((begin != end) && cmp(begin->first, k.first))
+			begin++;
+		return (begin);
+	}
+
+	iterator upper_bound (const value_type & k) {
+		iterator begin(tree_min(), root);
+		iterator end (NULL, root);
+		while ((begin != end) && !cmp(begin->first, k.first))
+			begin++;
+		return (begin);
+	}
+
+	const_iterator upper_bound (const value_type & k) const {
+		const_iterator begin(tree_min(), root);
+		const_iterator end (NULL, root);
+		while ((begin != end) && !cmp(begin->first, k.first))
+			begin++;
+		return (begin);
+	}
+
+	void	print() {
+
+		node_pointer x = root;
+		rec_print(x);
+	}
 
  private:
 
@@ -326,6 +435,7 @@ public:
 		if (b != NULL)
 			b->parent = a->parent;
 	}
+
 }; // class BinTree
 
 } // namespace ft
