@@ -166,13 +166,15 @@ public:
 	explicit BinTree(const comp cmp = comp(), const allocator_node & al = allocator_node ()):
 			cmp(cmp), alloc(al), _size(0) { root = NULL; }
 
-	BinTree(const BinTree& other){
+	BinTree(const BinTree& other): root(NULL){
 		*this = other;
 	}
+
 	BinTree &operator=(const BinTree &other) {
 		if (this == &other) return *this;
 
 		rec_delete(root);
+		root = NULL;
 		node_pointer tmp_head = other.root;
 		cmp = other.cmp;
 		alloc = other.alloc;
@@ -181,6 +183,7 @@ public:
 			tmp_head = successor(tmp_head);
 		}
 		_size = other._size;
+		return (*this);
 	}
 
 	~BinTree (){ rec_delete(root); }
@@ -290,7 +293,7 @@ public:
 		}
 	}
 
-	node_pointer search_by_key(const value_type &val) {
+	node_pointer search_by_key(const value_type &val) const {
 		node_pointer x = root;
 
 		while (x != NULL && val.first != x->data.first) {
@@ -314,6 +317,15 @@ public:
 		return (x);
 	}
 
+	node_pointer tree_min() const {
+		node_pointer x = root;
+		if (x == NULL)
+			return (x);
+		while (x->left != NULL)
+			x = x->left;
+		return (x);
+	}
+
 	node_pointer tree_min(node_pointer x) {
 		if (x == NULL)
 			return (x);
@@ -323,6 +335,15 @@ public:
 	}
 
 	node_pointer tree_max() {
+		node_pointer x = root;
+		if (x == NULL)
+			return (x);
+		while (x->right != NULL)
+			x = x->right;
+		return (x);
+	}
+
+	node_pointer tree_max() const {
 		node_pointer x = root;
 		if (x == NULL)
 			return (x);
@@ -422,6 +443,42 @@ public:
 			alloc.destroy(n);
 			alloc.deallocate(n, 1);
 		}
+	}
+
+	node* successor(node* x) {
+		if (x == NULL) {
+			x = root;
+			if (x == NULL)
+				throw std::runtime_error("An increment was made for an empty map.");
+			x = tree_min(x);
+			return (x);
+		}
+		if (x->right != NULL)
+			return tree_min(x->right);
+		node* y = x->parent;
+		while (y != NULL && x == y->right) {
+			x = y;
+			y = y->parent;
+		}
+		return y;
+	}
+
+	node* predecessor(node* x) {
+		if (x == NULL) {
+			x = root;
+			if (x == NULL)
+				throw std::runtime_error("An decrement was made for an empty map.");
+			x = tree_max(x);
+			return (x);
+		}
+		if (x->left != NULL)
+			return tree_max(x->left);
+		node* y = x->parent;
+		while (y != NULL && x == y->left) {
+			x = y;
+			y = y->parent;
+		}
+		return (y);
 	}
 
 	void transplant(node_pointer a, node_pointer b) {
