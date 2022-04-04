@@ -35,6 +35,7 @@ public:
 
 	class value_compare :
 	public ft::binary_function < value_type, value_type, bool> {
+		friend class map;
 	 protected:
 		Compare comp;
 		value_compare (Compare c): comp(c) { }
@@ -59,12 +60,13 @@ public:
 		 const allocator_node alloc = allocator_node()): tree(comp, alloc) {
 		insert(first, last);
 	}
-	map(const map& other): tree(other.getCmp(), other.getAlloc()) {	}
+	map(const map& other): tree(other.tree) {	}
 
 	map &operator=(const map& other) {
 		if (this == &other) return *this;
 
 		tree = other.tree;
+		return (*this);
 	}
 
 	~map() {}
@@ -76,7 +78,7 @@ public:
 	}
 
 	const_iterator begin() const {
-		return (iterator(tree.tree_min(), tree.root));
+		return (const_iterator(tree.tree_min(), tree.root));
 	}
 
 	iterator end() {
@@ -84,7 +86,7 @@ public:
 	}
 
 	const_iterator end() const {
-		return (iterator(NULL, tree.root));
+		return (const_iterator(NULL, tree.root));
 	}
 
 	reverse_iterator rbegin() {
