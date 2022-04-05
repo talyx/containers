@@ -42,8 +42,10 @@ class reverse_iterator : public iterator<typename ft::iterator_traits<Iterator>:
 	iterator_type base() const { return base_it; }
 
 	reference operator*() const {
-		iterator_type i_t = base_it;
-		return *(--i_t);
+		iterator_type i_t ;
+		i_t = base_it;
+		i_t--;
+		return *(i_t);
 	}
 
 	reverse_iterator operator+(size_t n) const {
@@ -102,39 +104,39 @@ class reverse_iterator : public iterator<typename ft::iterator_traits<Iterator>:
 // Non-member funcition
 //========================================================================================================
 
-template <class Iterator>
-bool operator== (const reverse_iterator<Iterator>& lhs,
-		const reverse_iterator<Iterator>& rhs) {
+template <class Iterator1, class Iterator2>
+bool operator== (const reverse_iterator<Iterator1>& lhs,
+		const reverse_iterator<Iterator2>& rhs) {
 	return (lhs.base() == rhs.base());
 }
 
-template <class Iterator>
+template <class Iterator, class Iterator2>
 bool operator!= (const reverse_iterator<Iterator>& lhs,
-		const reverse_iterator<Iterator>& rhs) {
+		const reverse_iterator<Iterator2>& rhs) {
 	return (lhs.base() != rhs.base());
 }
 
-template <class Iterator>
+template <class Iterator, class Iterator2>
 bool operator<  (const reverse_iterator<Iterator>& lhs,
-		const reverse_iterator<Iterator>& rhs) {
+		const reverse_iterator<Iterator2>& rhs) {
 	return (lhs.base() > rhs.base());
 }
 
-template <class Iterator>
+template <class Iterator, class Iterator2>
 bool operator<= (const reverse_iterator<Iterator>& lhs,
-		const reverse_iterator<Iterator>& rhs) {
+		const reverse_iterator<Iterator2>& rhs) {
 	return ((lhs < rhs) || (lhs == rhs));
 }
 
-template <class Iterator>
+template <class Iterator, class Iterator2>
 bool operator> (const reverse_iterator<Iterator>& lhs,
-		const reverse_iterator<Iterator>& rhs) {
+		const reverse_iterator<Iterator2>& rhs) {
 	return (!(lhs <= rhs));
 }
 
-template <class Iterator>
+template <class Iterator, class  Iterator2>
 bool operator>= (const reverse_iterator<Iterator>& lhs,
-		const reverse_iterator<Iterator>& rhs) {
+		const reverse_iterator<Iterator2>& rhs) {
 	return (!(lhs < rhs));
 }
 

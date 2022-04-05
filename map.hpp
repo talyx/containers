@@ -157,7 +157,7 @@ public:
 
 	iterator find(const key_type& k) {
 		node* tmp = tree.search_by_key(ft::make_pair(k, mapped_type()));
-
+		std::cout << (tmp == NULL) << std::endl;
 		return (iterator(tmp, tree.root));
 	}
 	const_iterator find(const key_type& k) const {
@@ -198,6 +198,24 @@ public:
 		return (ft::make_pair(lower_bound(k), upper_bound(k)));
 	}
 
+//========================================================================================================
+// observers
+//========================================================================================================
+
+	key_compare key_comp() const {
+		key_compare key;
+		return (key);
+	}
+
+	value_compare value_comp() const {
+		value_compare v_cmp(key_comp());
+		return (v_cmp);
+	}
+
+	allocator_type  get_allocator() const {
+		allocator_type al;
+		return (al);
+	}
 }; // class map
 //========================================================================================================
 // Non-member functions

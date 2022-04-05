@@ -21,8 +21,8 @@ public:
 				public:
 					typedef typename ft::conditional<isConst, const T, T>::type			value_type;
 					typedef typename ft::conditional<isConst, const ft::Node<T>, Node<T> >::type	node;
-					typedef typename ft::conditional<isConst, const Reference, Reference>::type	reference;
-					typedef typename ft::conditional<isConst, const Pointer, Pointer>::type		pointer;
+					typedef typename ft::conditional<isConst, const T&, T&>::type	reference;
+					typedef typename ft::conditional<isConst, const T*, T*>::type		pointer;
 					typedef Distance	difference_type;
 					typedef size_t		size_type;
 
@@ -38,7 +38,8 @@ public:
 
 					BST_iterator(node* const p, node* const root) { _node_ptr = p; this->root = root;}
 
-					BST_iterator(const BST_iterator& other): _node_ptr(other._node_ptr), root(other.root) { }
+					template <class t, class d, class p, class r, bool b>
+					BST_iterator(const BST_iterator<t, d, p, r, b>& other): _node_ptr(other.base()), root(other.getRoot()) { }
 					~BST_iterator() {}
 				//========================================================================================================
 				// operator overloading
@@ -46,20 +47,27 @@ public:
 					BST_iterator &operator=(const BST_iterator& other) {
 						if (this == &other) return *this;
 
-						_node_ptr = other._node_ptr;
-						root = other.root;
+						_node_ptr = other.base();
+						root = other.getRoot();
 						return (*this);
 					}
 
 					template<typename t, typename distance, typename pointer,
-							typename reference, bool _isConst>
-					bool	operator==(const BST_iterator<t, distance, pointer, reference, _isConst> &other) {
-						return (_node_ptr == other._node_ptr);
+							typename reference>
+					bool	operator==(const BST_iterator<t, distance, pointer, reference, false> &other) const {
+						return (_node_ptr == other.base());
 					}
+
+				template<typename t, typename distance, typename pointer,
+						typename reference>
+				bool	operator==(const BST_iterator<t, distance, pointer, reference, true> &other) const {
+					return (_node_ptr == other.base());
+				}
+
 					template<typename t, typename distance, typename pointer,
 							typename reference, bool _isConst>
-					bool	operator!=(const BST_iterator<t, distance, pointer, reference, _isConst> &other) {
-						return (!(_node_ptr == other._node_ptr));
+					bool	operator!=(const BST_iterator<t, distance, pointer, reference, _isConst> &other) const {
+						return (!(_node_ptr == other.base()));
 					}
 
 					BST_iterator &operator++() {
@@ -84,13 +92,14 @@ public:
 						return (tmp);
 					}
 
-					reference operator*() {return (_node_ptr->data); }
+					value_type &operator*() const {return (_node_ptr->data); }
 
-					pointer operator->() {return (&(_node_ptr->data));}
+					value_type* operator->() const {return (&(_node_ptr->data));}
 				//========================================================================================================
 				// function
 				//========================================================================================================
-					node* base() { return (_node_ptr); }
+					node* base() const { return (_node_ptr); }
+					node* getRoot() const { return  (root); }
 
 					node* tree_min(node* x) {
 						while (x->left != NULL)
@@ -376,6 +385,7 @@ public:
 
 	void clear() {
 		rec_delete(root);
+		_size = 0;
 		root = NULL;
 	}
 
