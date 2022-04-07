@@ -172,11 +172,15 @@ public:
 // constructor/destructor
 //========================================================
 
-	explicit BinTree(const comp cmp = comp(), const allocator_node & al = allocator_node ()):
+	explicit BinTree(const comp cmp = comp(), const allocator_type & al = allocator_type ()):
 			cmp(cmp), alloc(al), _size(0) { root = NULL; }
 
-	BinTree(const BinTree& other): root(NULL){
-		*this = other;
+	BinTree(const BinTree& other): cmp(other.cmp), alloc(other.alloc), _size (other._size), root(NULL){
+		node_pointer  tmp = other.tree_min();
+		while (tmp != NULL) {
+			insert(tmp->data);
+			tmp = successor(tmp);
+		}
 	}
 
 	BinTree &operator=(const BinTree &other) {
@@ -184,7 +188,7 @@ public:
 
 		rec_delete(root);
 		root = NULL;
-		node_pointer tmp_head = other.root;
+		node_pointer tmp_head = other.tree_min();
 		cmp = other.cmp;
 		alloc = other.alloc;
 		while (tmp_head != NULL) {
@@ -210,15 +214,18 @@ public:
 		node_pointer x = root;
 		while (x != NULL) {
 			y = x;
+
 			if (cmp(val.first, x->data.first))
 				x = x->left;
+			else if (val.first == x->data.first)
+				break;
 			else
 				x = x->right;
 		}
+
 		if (y != NULL && y->data.first == val.first) {
 			return ft::make_pair(iterator (y, root), false);
 		}
-
 		node_pointer new_node = alloc.allocate(1);
 		try {
 			init_new_node(new_node, val);
@@ -258,19 +265,10 @@ public:
 		node_pointer ret = NULL;
 		if (tmp == NULL)
 			return (tmp);
+		ret = successor(tmp);
 		if (tmp->left == NULL) {
-			if (tmp->right != NULL) {
-				ret = tmp->right;
-			}
-			else {
-				ret = tmp->parent;
-			}
 			transplant(tmp, tmp->right);
 		} else if (tmp->right == NULL) {
-			if (tmp->left != NULL)
-				ret = tmp->left;
-			else
-				ret = tmp->parent;
 			transplant(tmp, tmp->left);
 		} else {
 			node_pointer y = tree_min(tmp->right);
@@ -279,7 +277,6 @@ public:
 				y->right = tmp->right;
 				y->right->parent = y;
 			}
-			ret = y;
 			transplant(tmp, y);
 			y->left = tmp->left;
 			y->left->parent = y;
@@ -291,13 +288,19 @@ public:
 	}
 
 	iterator erase(iterator pos) {
+		iterator end(NULL, root);
+		if (pos == end)
+			return (end);
 		value_type tmp = *pos;
 		node_pointer n_tmp = erase(tmp);
 		return (iterator(n_tmp, root));
 	}
 
 	void 	erase(iterator first, iterator last) {
-		while (first != last) {
+		iterator end(NULL, root);
+		if (first == end)
+			return;
+		while (first != last && first != end) {
 			first = erase(first);
 		}
 	}
@@ -306,7 +309,7 @@ public:
 		node_pointer x = root;
 
 		while (x != NULL && val.first != x->data.first) {
-			if (val < x->data)
+			if (cmp(val.first, x->data.first))
 				x = x->left;
 			else
 				x = x->right;
@@ -343,6 +346,15 @@ public:
 		return (x);
 	}
 
+	node_pointer tree_min(node_pointer x) const {
+		if (x == NULL)
+			return (x);
+		while (x->left != NULL)
+			x = x->left;
+		return (x);
+	}
+
+
 	node_pointer tree_max() {
 		node_pointer x = root;
 		if (x == NULL)
@@ -371,7 +383,7 @@ public:
 		return (x);
 	}
 
-	allocator_node getAlloc() { return alloc; }
+	allocator_type getAlloc() { return alloc; }
 	comp getComp() { return cmp; }
 
 
@@ -408,7 +420,7 @@ public:
 	iterator upper_bound (const value_type & k) {
 		iterator begin(tree_min(), root);
 		iterator end (NULL, root);
-		while ((begin != end) && !cmp(begin->first, k.first))
+		while ((begin != end) && (cmp(k.first, begin->first ) == false))
 			begin++;
 		return (begin);
 	}
@@ -421,11 +433,24 @@ public:
 		return (begin);
 	}
 
-	void	print() {
-
+	void	print() const {
 		node_pointer x = root;
 		rec_print(x);
 	}
+
+	void print_it()  const {
+		node_pointer  start = tree_min();
+		std::cout << WARNING << "===============================\n" << RESET;
+		while (start != NULL) {
+			std::cout << FAIL << "self   " << start->data.first << std::endl;
+			std::cout << "parent " << ((start->parent == NULL) ? "NULL" :start->parent->data.first) << std::endl;
+			std::cout << "left   " << ((start->left == NULL)? "NULL" : start->left->data.first )<< std::endl;
+			std::cout << "right  " << ((start->right == NULL) ? "NULL" : start->right->data.first) << RESET << std::endl;
+			start = successor(start);
+			std::cout << WARNING << "===============================\n" << RESET;
+		}
+	}
+
 
  private:
 
@@ -438,7 +463,7 @@ public:
 		alloc.construct(ptr, tmp);
 	}
 
-	void rec_print(node_pointer n) {
+	void rec_print(node_pointer n) const {
 		if (n != NULL) {
 			rec_print(n->left);
 			std::cout << n->data.first << " " << n->data.second << std::endl;
@@ -456,6 +481,24 @@ public:
 	}
 
 	node* successor(node* x) {
+		if (x == NULL) {
+			x = root;
+			if (x == NULL)
+				throw std::runtime_error("An increment was made for an empty map.");
+			x = tree_min(x);
+			return (x);
+		}
+		if (x->right != NULL)
+			return tree_min(x->right);
+		node* y = x->parent;
+		while (y != NULL && x == y->right) {
+			x = y;
+			y = y->parent;
+		}
+		return y;
+	}
+
+	node* successor(node* x) const {
 		if (x == NULL) {
 			x = root;
 			if (x == NULL)

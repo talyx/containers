@@ -47,20 +47,21 @@ public:
 
 private:
 	binTree tree;
+	allocator_type _alloc;
 
 public:
 //========================================================================================================
 // constructor/destructor
 //========================================================================================================
-	explicit map(const key_compare& comp = key_compare(), const allocator_node alloc = allocator_node()):
-	tree(comp, alloc) {	}
+	explicit map(const key_compare& comp = key_compare(), const allocator_type alloc = allocator_type()):
+	tree(comp, alloc), _alloc(allocator_type()) {	}
 
 	template<class InputIterator>
 	map (InputIterator first, InputIterator last, const key_compare comp = key_compare(),
-		 const allocator_node alloc = allocator_node()): tree(comp, alloc) {
+		 const allocator_type alloc = allocator_type()): tree(comp, alloc), _alloc(allocator_type()) {
 		insert(first, last);
 	}
-	map(const map& other): tree(other.tree) {	}
+	map(const map& other): tree(other.tree), _alloc(allocator_type()){	}
 
 	map &operator=(const map& other) {
 		if (this == &other) return *this;
@@ -110,7 +111,9 @@ public:
 //========================================================================================================
 	bool empty() const { return (tree.empty()); }
 	size_type  size() const { return (tree.size()); }
-	size_type  max_size() const { return (tree.max_size());}
+	size_type  max_size() const {
+		return (tree.max_size());
+	}
 
 //========================================================================================================
 // element access
@@ -157,7 +160,6 @@ public:
 
 	iterator find(const key_type& k) {
 		node* tmp = tree.search_by_key(ft::make_pair(k, mapped_type()));
-		std::cout << (tmp == NULL) << std::endl;
 		return (iterator(tmp, tree.root));
 	}
 	const_iterator find(const key_type& k) const {
@@ -213,8 +215,7 @@ public:
 	}
 
 	allocator_type  get_allocator() const {
-		allocator_type al;
-		return (al);
+		return (_alloc);
 	}
 }; // class map
 //========================================================================================================
