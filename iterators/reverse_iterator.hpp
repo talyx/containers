@@ -42,10 +42,7 @@ class reverse_iterator : public iterator<typename ft::iterator_traits<Iterator>:
 	iterator_type base() const { return base_it; }
 
 	reference operator*() const {
-		iterator_type i_t ;
-		i_t = base_it;
-		i_t--;
-		return *(i_t);
+		return *(base_it);
 	}
 
 	reverse_iterator operator+(size_t n) const {
@@ -96,7 +93,7 @@ class reverse_iterator : public iterator<typename ft::iterator_traits<Iterator>:
 	pointer operator->() const { return &(operator*()); }
 
 	reference operator[](size_t n) const {
-		return (base_it[-n - 1]);
+		return (base_it[-n]);
 	}
 }; // class reverse_iterator
 

@@ -193,13 +193,13 @@ class vector {
 
 	const_iterator end() const { iterator e(arr + _size); return (e); }
 
-	reverse_iterator rbegin() { reverse_iterator rev_it(this->end()); return (rev_it); }
+	reverse_iterator rbegin() { reverse_iterator rev_it(--(this->end())); return (rev_it); }
 
-	const_reverse_iterator rbegin() const { reverse_iterator rev_it(this->end()); return (rev_it);}
+	const_reverse_iterator rbegin() const { reverse_iterator rev_it(--(this->end())); return (rev_it);}
 
-	reverse_iterator rend() { reverse_iterator rev_it (this->begin()); return (rev_it); }
+	reverse_iterator rend() { reverse_iterator rev_it (--(this->begin())); return (rev_it); }
 
-	const_reverse_iterator rend() const { reverse_iterator rev_it (this->begin()); return (rev_it); }
+	const_reverse_iterator rend() const { reverse_iterator rev_it (--(this->begin())); return (rev_it); }
 
 //========================================================================================================
 // Capacity
