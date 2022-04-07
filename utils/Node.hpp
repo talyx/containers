@@ -11,20 +11,19 @@ template <typename T>
 struct Node {
 
  public:
-	typedef T	value_type;
-
 	Node*		parent;
 	Node*		left;
 	Node*		right;
-	value_type	data;
+	bool		color;
+	T			data;
 
 //=========================================================
 // constructor/destructor
 //=========================================================
 
-	Node(): data(value_type()) {}
+	Node(): data(T()) {}
 
-	Node(const value_type &val): data(val) { }
+	Node(const T &val): data(val) { }
 
 	Node(const Node & o): parent(o.parent), left(o.left),
 		right(o.right), data(o.data) { }
