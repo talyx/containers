@@ -6,7 +6,7 @@ WARNING =\033[93m
 RESET =\033[0m
 
 CXX = clang++
- SANFLAGS = -fsanitize=address
+# SANFLAGS = -fsanitize=address
 DEBUGFLAGS = -g -fno-limit-debug-info
 CXXFLAGS = -Wall -Wextra -Werror -std=c++98 $(DEBUGFLAGS) $(SANFLAGS) -O3
 
@@ -29,7 +29,7 @@ FT_MAP = ft_map
 STD_MAP = std_map
 MAP = map
 MAP_INC = map.hpp utils/utils.hpp utils/BinTree.hpp \
-			iterators/reverse_iterator.hpp \
+			iterators/reverse_iterator.hpp  utils/Node.hpp\
 
 FT_STACK = ft_stack
 STD_STACK = std_stack
