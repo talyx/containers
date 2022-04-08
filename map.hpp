@@ -67,6 +67,7 @@ public:
 		if (this == &other) return *this;
 
 		tree = other.tree;
+		_alloc = other._alloc;
 		return (*this);
 	}
 
