@@ -175,7 +175,7 @@ public:
 	explicit BinTree(const comp cmp = comp(), const allocator_type & al = allocator_type ()):
 			cmp(cmp), alloc(al), _size(0) { root = NULL; }
 
-	BinTree(const BinTree& other): cmp(other.cmp), alloc(other.alloc), _size (other._size), root(NULL){
+	BinTree(const BinTree& other): cmp(other.cmp), alloc(other.alloc), _size(0), root(NULL){
 		node_pointer  tmp = other.tree_min();
 		while (tmp != NULL) {
 			insert(tmp->data);
@@ -188,6 +188,7 @@ public:
 
 		rec_delete(root);
 		root = NULL;
+		_size = 0;
 		node_pointer tmp_head = other.tree_min();
 		cmp = other.cmp;
 		alloc = other.alloc;
@@ -195,7 +196,6 @@ public:
 			this->insert(tmp_head->data);
 			tmp_head = successor(tmp_head);
 		}
-		_size = other._size;
 		return (*this);
 	}
 
