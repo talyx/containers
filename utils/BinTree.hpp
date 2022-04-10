@@ -389,10 +389,25 @@ public:
 
 	void swap (BinTree &other) {
 
-		BinTree tmp;
-		tmp = *this;
-		*this = other;
-		other = tmp;
+		comp 			tmp_cmp;
+		allocator_node	tmp_alloc;
+		size_t 			tmp_size;
+		node_pointer 	tmp_root;
+
+		tmp_cmp = cmp;
+		tmp_alloc = alloc;
+		tmp_size = _size;
+		tmp_root = root;
+
+		cmp = other.cmp;
+		alloc = other.alloc;
+		_size = other._size;
+		root = other.root;
+
+		other.cmp = tmp_cmp;
+		other.alloc = tmp_alloc;
+		other._size = tmp_size;
+		other.root = tmp_root;
 	}
 
 	void clear() {
