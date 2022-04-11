@@ -364,6 +364,7 @@ class vector {
 		typename ft::enable_if<!is_integral<InputIterator>::value, void**>::type = NULL) {
 		size_type count = ft::iterator_dist(first, last);
 		size_type it_index = position - begin();
+		position = iterator(&arr[it_index]);
 		if (_size + count > _cap * 2)
 			reserve(_size + count);
 		else if (_cap > 0)

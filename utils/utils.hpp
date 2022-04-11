@@ -190,10 +190,9 @@ struct less: public ft::binary_function<T, T, bool > {
 
 template < class T1, class T2 >
 struct pair {
- protected:
+ public:
 	typedef T1 first_type;
 	typedef T2 second_type;
- public:
 	first_type	first;
 	second_type	second;
 
